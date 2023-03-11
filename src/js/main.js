@@ -30,14 +30,12 @@ class Products {
         localStorage.setItem("data", JSON.stringify(products));
         localStorage.setItem("cart", JSON.stringify([]));
       }
-      this.cart = JSON.parse(localStorage.getItem("cart"));
-      this.allProducts = JSON.parse(localStorage.getItem("data"));
       this.isLocalStorageAvailable = true;
     } else {
       this.isLocalStorageAvailable = false;
-      this.cart = [];
-      this.allProducts = products;
     }
+    this.cart = JSON.parse(localStorage.getItem("cart")) || [];
+    this.allProducts = JSON.parse(localStorage.getItem("data")) || products;
 
     this.render();
   }
@@ -222,6 +220,11 @@ class Products {
    */
 
   render() {
+    if (!this.allProducts.length) {
+      const productsError = `<div class="products_error"><p>Sorry, an error happened while bringing your products Please use the below button to refresh the page.</p>
+      <button onclick={window.location.reload()}>Refresh</button></div>`;
+      return (this.$productsContainer.innerHTML = productsError);
+    }
     this.allProducts.forEach(
       ({ id, product_name, product_price, product_image, added_to_cart }) => {
         const cardDiv = document.createElement("div");
